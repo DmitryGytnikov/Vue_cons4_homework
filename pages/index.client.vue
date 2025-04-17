@@ -1,4 +1,6 @@
 <script setup>
+import { InfoFilled } from "@element-plus/icons-vue"
+
 const router = useRouter()
 
 const tasks = ref([
@@ -60,7 +62,11 @@ const editTask = idTask => {
 	<!-- <ClientOnly> -->
 	<div class="container--home">
 		<h2>Список задач</h2>
-		<NuxtLink to="/createTodo" class="create-link"> Создать задачу </NuxtLink>
+		<!-- <NuxtLink to="/createTodo" class="create-link"> Создать задачу </NuxtLink> -->
+		<NuxtLink to="/createTodo" class="create-link">
+			<el-button type="success" plain>Создать задачу</el-button>
+		</NuxtLink>
+
 		<div
 			v-for="(task, index) in tasks"
 			:key="task.id"
@@ -71,12 +77,62 @@ const editTask = idTask => {
 			<p class="task__number">{{ index + 1 }} .</p>
 			<p class="task__text">{{ task.description }}</p>
 			<div>
-				<button @click.stop="deleteTask(task.id)" class="task__delete">
+				<!-- <button @click.stop="deleteTask(task.id)" class="task__delete">
 					Удалить
-				</button>
-				<button @click.stop="editTask(task.id)" class="task__edit">
+				</button> -->
+
+				<!-- <el-button
+					@click.stop="deleteTask(task.id)"
+					class="task__delete"
+					type="danger"
+					plain
+				>
+					Удалить
+				</el-button> -->
+
+				<el-popconfirm
+					width="300"
+					:icon="InfoFilled"
+					icon-color="#ff9900"
+					title="Вы уверены, что хотите удалить задачу?"
+					@confirm.stop="deleteTask(task.id)"
+				>
+					<template #reference>
+						<el-button @click.stop="" class="task__delete" type="danger" plain>
+							Удалить
+						</el-button>
+					</template>
+					<template #actions="{ confirm, cancel }">
+						<el-button
+							@click="cancel"
+							plain
+							style="width: 50px; border: 2px solid #a0cfff; border-radius: 5px"
+							type="primary"
+						>
+							Нет
+						</el-button>
+						<el-button
+							@click="confirm"
+							plain
+							style="width: 50px; border: 2px solid #a0cfff; border-radius: 5px"
+							type="primary"
+						>
+							Да
+						</el-button>
+					</template>
+				</el-popconfirm>
+
+				<!-- <button @click.stop="editTask(task.id)" class="task__edit">
 					Редактировать
-				</button>
+				</button> -->
+				<el-button
+					@click.stop="editTask(task.id)"
+					class="task__edit"
+					type="primary"
+					plain
+				>
+					Редактировать
+				</el-button>
 			</div>
 		</div>
 	</div>
@@ -116,33 +172,48 @@ body {
 
 .create-link {
 	display: block;
+	height: 32px;
 
-	padding: 8px 15px;
+	/* padding: 8px 15px; */
 	margin-bottom: 8px;
 
-	text-align: center;
+	/*text-align: center;
 	font-size: 16px;
 	font-weight: 500;
 
 	line-height: 1;
-	color: #67c23a;
+	color: #67c23a; */
 
 	outline: none;
 	text-decoration: none;
-	border: 2px solid #b3e19d;
+	/* border: 2px solid #b3e19d;
 	border-radius: 5px;
 
-	cursor: pointer;
+	cursor: pointer; */
 	text-decoration-line: none;
 
-	transition: all 0.3s ease;
+	/* transition: all 0.3s ease;  */
 }
 
-.create-link:hover,
+/* .create-link:hover,
 .create-link:focus,
-.create-link:active {
-	background-color: #67c23a;
+.create-link:active { */
+/* background-color: #67c23a;
 	color: #fffff3;
+	border: 2px solid #67c23a; */
+/* } */
+
+.create-link button {
+	width: 100%;
+	border: 2px solid #b3e19d;
+	border-radius: 5px;
+}
+
+.create-link button:hover,
+.create-link button:focus,
+.create-link button:active {
+	/* background-color: #67c23a;
+	color: #fffff3; */
 	border: 2px solid #67c23a;
 }
 
@@ -188,7 +259,7 @@ body {
 	justify-content: space-between;
 }
 
-.task__delete {
+/* .task__delete {
 	height: 32px;
 	width: 100%;
 
@@ -208,15 +279,28 @@ body {
 	transition: all 0.3s ease;
 }
 
+
 .task__delete:hover,
 .task__delete:focus,
 .task__delete:active {
 	background-color: #f56c6c;
 	color: #fffff6;
 	border: 2px solid #f56c6c;
+} */
+
+.task__delete {
+	width: 100%;
+	border: 2px solid #facbcb;
+	border-radius: 5px;
 }
 
-.task__edit {
+.task__delete:hover,
+.task__delete:focus,
+.task__delete:active {
+	border: 2px solid #f56c6c;
+}
+
+/* .task__edit {
 	height: 32px;
 	width: 100%;
 
@@ -243,6 +327,19 @@ body {
 .task__edit:active {
 	background-color: #409eff;
 	color: #f3ffff;
+	border: 2px solid #409eff;
+} */
+
+.task__edit {
+	width: 100%;
+	border: 2px solid #a0cfff;
+	border-radius: 5px;
+	margin-left: 0;
+}
+
+.task__edit:hover,
+.task__edit:focus,
+.task__edit:active {
 	border: 2px solid #409eff;
 }
 </style>

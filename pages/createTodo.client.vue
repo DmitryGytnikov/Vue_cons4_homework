@@ -1,4 +1,6 @@
 <script setup>
+import { InfoFilled } from "@element-plus/icons-vue"
+
 const router = useRouter()
 
 const tasks = ref([])
@@ -39,14 +41,52 @@ const cancelSaveTask = () => {
 			placeholder=""
 			id="create-task"
 		/>
-		<div class="create__container">
-			<button @click="cancelSaveTask" class="create__cancel" type="button">
+		<el-button-group class="create__container">
+			<!-- <el-button
+				@click="cancelSaveTask"
+				class="create__cancel"
+				type="danger"
+				plain
+			>
 				Отменить
-			</button>
-			<button @click="saveTask" class="create__save" type="button">
+			</el-button> -->
+
+			<el-popconfirm
+				width="300"
+				:icon="InfoFilled"
+				icon-color="#ff9900"
+				title="Вы уверены, что хотите отменить создание задачи?"
+				@confirm="cancelSaveTask"
+			>
+				<template #reference>
+					<el-button class="create__cancel" type="danger" plain>
+						Отменить
+					</el-button>
+				</template>
+				<template #actions="{ confirm, cancel }">
+					<el-button
+						@click="cancel"
+						plain
+						style="width: 50px; border: 2px solid #a0cfff; border-radius: 5px"
+						type="primary"
+					>
+						Нет
+					</el-button>
+					<el-button
+						@click="confirm"
+						plain
+						style="width: 50px; border: 2px solid #a0cfff; border-radius: 5px"
+						type="primary"
+					>
+						Да
+					</el-button>
+				</template>
+			</el-popconfirm>
+
+			<el-button @click="saveTask" class="create__save" type="primary" plain>
 				Сохранить
-			</button>
-		</div>
+			</el-button>
+		</el-button-group>
 	</div>
 </template>
 
@@ -123,7 +163,7 @@ const cancelSaveTask = () => {
 	display: flex;
 }
 
-.create__cancel {
+/* .create__cancel {
 	width: 50%;
 	height: 32px;
 
@@ -149,9 +189,21 @@ const cancelSaveTask = () => {
 	background-color: #f56c6c;
 	color: #fffff6;
 	border: 2px solid #f56c6c;
+} */
+
+.create__cancel {
+	border: 2px solid #facbcb;
+	border-radius: 5px;
+	width: 50%;
 }
 
-.create__save {
+.create__cancel:hover,
+.create__cancel:focus,
+.create__cancel:active {
+	border: 2px solid #f56c6c;
+}
+
+/* .create__save {
 	width: 50%;
 	height: 32px;
 
@@ -169,13 +221,26 @@ const cancelSaveTask = () => {
 	cursor: pointer;
 
 	transition: all 0.3s ease;
+} */
+
+/* .create__save:hover,
+.create__save:focus,
+.create__save:active {
+	background-color: #409eff;
+	color: #f3ffff;
+	border: 2px solid #409eff;
+} */
+
+.create__save {
+	border: 2px solid #a0cfff;
+	border-radius: 5px;
+	width: 50%;
+	margin-left: 0;
 }
 
 .create__save:hover,
 .create__save:focus,
 .create__save:active {
-	background-color: #409eff;
-	color: #f3ffff;
 	border: 2px solid #409eff;
 }
 </style>

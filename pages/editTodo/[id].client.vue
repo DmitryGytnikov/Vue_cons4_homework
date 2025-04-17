@@ -1,4 +1,6 @@
 <script setup>
+import { InfoFilled } from "@element-plus/icons-vue"
+
 const router = useRouter()
 const route = useRoute()
 
@@ -49,14 +51,62 @@ const cancelEditTask = () => {
 			placeholder=""
 			id="edit-task"
 		/>
-		<div class="edit__container">
-			<button @click="cancelEditTask" class="edit__cancel" type="button">
+		<!-- <div class="edit__container"> -->
+		<el-button-group class="edit__container">
+			<!-- <button @click="cancelEditTask" class="edit__cancel" type="button">
 				Отменить
 			</button>
 			<button @click="saveTask" class="edit__save" type="button">
 				Сохранить изменения
-			</button>
-		</div>
+			</button> -->
+
+			<!-- <el-button
+				@click="cancelEditTask"
+				class="edit__cancel"
+				type="danger"
+				plain
+			>
+				Отменить
+			</el-button> -->
+
+			<el-popconfirm
+				width="300"
+				:icon="InfoFilled"
+				icon-color="#ff9900"
+				title="Вы уверены, что хотите отменить редактирование задачи задачи?"
+				@confirm="cancelEditTask"
+			>
+				<template #reference>
+					<el-button class="edit__cancel" type="danger" plain>
+						Отменить
+					</el-button>
+				</template>
+				<template #actions="{ confirm, cancel }">
+					<el-button
+						@click="cancel"
+						plain
+						style="width: 50px; border: 2px solid #a0cfff; border-radius: 5px"
+						type="primary"
+					>
+						Нет
+					</el-button>
+					<el-button
+						@click="confirm"
+						plain
+						style="width: 50px; border: 2px solid #a0cfff; border-radius: 5px"
+						type="primary"
+					>
+						Да
+					</el-button>
+				</template>
+			</el-popconfirm>
+
+			<el-button @click="saveTask" class="edit__save" type="primary" plain>
+				Сохранить изменения
+			</el-button>
+		</el-button-group>
+
+		<!-- </div> -->
 	</div>
 </template>
 
@@ -133,7 +183,7 @@ const cancelEditTask = () => {
 	display: flex;
 }
 
-.edit__cancel {
+/* .edit__cancel {
 	width: 50%;
 	height: 32px;
 
@@ -159,9 +209,21 @@ const cancelEditTask = () => {
 	background-color: #f56c6c;
 	color: #fffff6;
 	border: 2px solid #f56c6c;
+} */
+
+.edit__cancel {
+	border: 2px solid #facbcb;
+	border-radius: 5px;
+	width: 50%;
 }
 
-.edit__save {
+.edit__cancel:hover,
+.edit__cancel:focus,
+.edit__cancel:active {
+	border: 2px solid #f56c6c;
+}
+
+/* .edit__save {
 	width: 50%;
 	height: 32px;
 
@@ -186,6 +248,19 @@ const cancelEditTask = () => {
 .edit__save:active {
 	background-color: #409eff;
 	color: #f3ffff;
+	border: 2px solid #409eff;
+} */
+
+.edit__save {
+	border: 2px solid #a0cfff;
+	border-radius: 5px;
+	width: 50%;
+	margin-left: 0;
+}
+
+.edit__save:hover,
+.edit__save:focus,
+.edit__save:active {
 	border: 2px solid #409eff;
 }
 </style>
