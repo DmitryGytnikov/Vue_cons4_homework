@@ -34,13 +34,21 @@ const cancelSaveTask = () => {
 	<div class="container--create">
 		<h2>Создать задачу</h2>
 		<label class="create__label" for="create-task">Название задачи</label>
-		<input
+
+		<!--<input
 			v-model="task"
 			class="create__input"
 			type="text"
 			placeholder=""
 			id="create-task"
+		 /> -->
+		<el-input
+			v-model="task"
+			class="create__input"
+			placeholder="Введите задачу"
+			id="create-task"
 		/>
+
 		<el-button-group class="create__container">
 			<!-- <el-button
 				@click="cancelSaveTask"
@@ -123,28 +131,32 @@ const cancelSaveTask = () => {
 }
 
 .create__input {
-	display: block;
-
-	height: 35px;
-	width: 100%;
-
-	padding: 1px 10px;
-
 	margin-bottom: 18px;
-
-	font-style: normal;
-	font-weight: 400;
-	color: black;
-
-	border: 1px solid #9ca3af;
-	border-radius: 5px;
-	outline: none;
-	background-color: #fefefe;
-
-	transition: all 0.4s ease;
 }
 
-.create__input::placeholder {
+.create__input input {
+	/* display: block;
+
+	height: 35px;
+	width: 100%; */
+
+	/* padding: 1px 10px; */
+
+	/* margin-bottom: 18px; */
+
+	/* font-style: normal;
+	font-weight: 400;
+	color: black; */
+
+	/* border: 1px solid #9ca3af;
+	border-radius: 5px;
+	outline: none;
+	background-color: #fefefe; */
+
+	/* transition: all 0.4s ease; */
+}
+
+/* .create__input::placeholder {
 	font-style: normal;
 	font-weight: 400;
 	color: black;
@@ -157,7 +169,7 @@ const cancelSaveTask = () => {
 .create__input:focus,
 .create__input:active {
 	border-color: #a0cfff;
-}
+} */
 
 .create__container {
 	display: flex;

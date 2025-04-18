@@ -44,13 +44,21 @@ const cancelEditTask = () => {
 	<div class="container--edit">
 		<h2>Редактировать задачу</h2>
 		<label class="edit__label" for="edit-task">Название задачи</label>
-		<input
+
+		<!-- <input
 			v-model="task.description"
 			class="edit__input"
 			type="text"
 			placeholder=""
 			id="edit-task"
+		/> -->
+		<el-input
+			v-model="task.description"
+			class="edit__input"
+			placeholder="Введите задачу"
+			id="edit-task"
 		/>
+
 		<!-- <div class="edit__container"> -->
 		<el-button-group class="edit__container">
 			<!-- <button @click="cancelEditTask" class="edit__cancel" type="button">
@@ -143,6 +151,10 @@ const cancelEditTask = () => {
 }
 
 .edit__input {
+	margin-bottom: 18px;
+}
+
+/* .edit__input {
 	display: block;
 
 	height: 35px;
@@ -162,22 +174,22 @@ const cancelEditTask = () => {
 	background-color: #fefefe;
 
 	transition: all 0.4s ease;
-}
+} */
 
-.edit__input::placeholder {
+/* .edit__input::placeholder {
 	font-style: normal;
 	font-weight: 400;
 	color: black;
-}
+} */
 
-.edit__input:hover {
+/* .edit__input:hover {
 	border-color: #c0c4cc;
 }
 
 .edit__input:focus,
 .edit__input:active {
 	border-color: #a0cfff;
-}
+} */
 
 .edit__container {
 	display: flex;
