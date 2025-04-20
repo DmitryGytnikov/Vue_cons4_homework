@@ -105,77 +105,92 @@ fixBugForDeploy()
 
 <template>
 	<!-- <ClientOnly> -->
-	<div class="container--home">
-		<h2>Список задач</h2>
-		<NuxtLink to="/createTodo" class="create-link">
-			<el-button type="success" plain>Создать задачу</el-button>
-		</NuxtLink>
+	<div>
+		<div class="container--home">
+			<h2>Список задач</h2>
+			<NuxtLink to="/createTodo" class="create-link">
+				<el-button type="success" plain>Создать задачу</el-button>
+			</NuxtLink>
 
-		<div
-			v-for="(task, index) in tasks"
-			:key="task.id"
-			class="task"
-			:class="{ 'task--completed': task.isCompleted }"
-			@click="setCompletion(task.id)"
-		>
-			<p class="task__number">{{ index + 1 }} .</p>
-			<div class="task__container">
-				<p class="task__text">{{ task.description }}</p>
-				<p
-					v-for="(subtask, subIndex) in task.subtasks"
-					:key="subtask.subId"
-					class="task__subtext"
-				>
-					{{ subIndex + 1 }}
-					<span>.</span>
-					{{ subtask.subDescription }}
-				</p>
-			</div>
-			<div>
-				<el-popconfirm
-					width="300"
-					:icon="InfoFilled"
-					icon-color="#ff9900"
-					title="Вы уверены, что хотите удалить задачу?"
-					@confirm.stop="deleteTask(task.id)"
-				>
-					<template #reference>
-						<el-button @click.stop="" class="task__delete" type="danger" plain>
-							Удалить
-						</el-button>
-					</template>
-					<template #actions="{ confirm, cancel }">
-						<el-button
-							@click="cancel"
-							plain
-							style="width: 50px; border: 2px solid #409eff; border-radius: 5px"
-							type="primary"
-						>
-							Нет
-						</el-button>
-						<el-button
-							@click="confirm"
-							plain
-							style="width: 50px; border: 2px solid #409eff; border-radius: 5px"
-							type="primary"
-						>
-							Да
-						</el-button>
-					</template>
-				</el-popconfirm>
+			<div
+				v-for="(task, index) in tasks"
+				:key="task.id"
+				class="task"
+				:class="{ 'task--completed': task.isCompleted }"
+				@click="setCompletion(task.id)"
+			>
+				<p class="task__number">{{ index + 1 }} .</p>
+				<div class="task__container">
+					<p class="task__text">{{ task.description }}</p>
+					<p
+						v-for="(subtask, subIndex) in task.subtasks"
+						:key="subtask.subId"
+						class="task__subtext"
+					>
+						{{ subIndex + 1 }}
+						<span>.</span>
+						{{ subtask.subDescription }}
+					</p>
+				</div>
+				<div>
+					<el-popconfirm
+						width="300"
+						:icon="InfoFilled"
+						icon-color="#ff9900"
+						title="Вы уверены, что хотите удалить задачу?"
+						@confirm.stop="deleteTask(task.id)"
+					>
+						<template #reference>
+							<el-button
+								@click.stop=""
+								class="task__delete"
+								type="danger"
+								plain
+							>
+								Удалить
+							</el-button>
+						</template>
+						<template #actions="{ confirm, cancel }">
+							<el-button
+								@click="cancel"
+								plain
+								style="
+									width: 50px;
+									border: 2px solid #409eff;
+									border-radius: 5px;
+								"
+								type="primary"
+							>
+								Нет
+							</el-button>
+							<el-button
+								@click="confirm"
+								plain
+								style="
+									width: 50px;
+									border: 2px solid #409eff;
+									border-radius: 5px;
+								"
+								type="primary"
+							>
+								Да
+							</el-button>
+						</template>
+					</el-popconfirm>
 
-				<el-button
-					@click.stop="editTask(task.id)"
-					class="task__edit"
-					type="primary"
-					plain
-				>
-					Редактировать
-				</el-button>
+					<el-button
+						@click.stop="editTask(task.id)"
+						class="task__edit"
+						type="primary"
+						plain
+					>
+						Редактировать
+					</el-button>
+				</div>
 			</div>
 		</div>
+		<!-- </ClientOnly> -->
 	</div>
-	<!-- </ClientOnly> -->
 </template>
 
 <style scoped>
