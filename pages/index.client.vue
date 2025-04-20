@@ -93,6 +93,14 @@ const deleteTask = id => {
 const editTask = idTask => {
 	router.push({ name: "editTodo-id", params: { id: idTask } })
 }
+
+const fixBugForDeploy = () => {
+	router.push({ name: "createTodo" })
+	router.push({ name: "index" })
+	console.log("Переход")
+}
+
+fixBugForDeploy()
 </script>
 
 <template>
