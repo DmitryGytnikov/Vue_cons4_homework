@@ -5,11 +5,25 @@ const router = useRouter()
 const route = useRoute()
 
 const tasks = ref([])
+
 const task = ref({
 	id: 0,
 	description: "",
 	isCompleted: false,
+	subtasks: [
+		{
+			subId: 0,
+			subDescription: "",
+		},
+	],
 })
+
+const subtasks = ref([
+	{
+		subId: 0,
+		subDescription: "",
+	},
+])
 
 const getTodos = () => {
 	tasks.value = JSON.parse(localStorage.getItem("tasks"))
@@ -17,41 +31,64 @@ const getTodos = () => {
 
 const getTask = () => {
 	task.value = tasks.value.find(task => task.id === +route.params.id)
+
+	subtasks.value = task.value.subtasks
 }
 
 getTodos()
 getTask()
 
 const saveTask = () => {
-	tasks.value = tasks.value.map(currentTask => {
-		if (currentTask.id === +route.params.id) {
-			currentTask.description = task.value.description
+	if (task.value.description.length > 0) {
+		subtasks.value = subtasks.value.filter(
+			subtask => subtask.subDescription !== ""
+		)
+
+		for (let i = 0; i < subtasks.value.length; i++) {
+			subtasks.value[i].subId = i
 		}
-		return currentTask
-	})
 
-	localStorage.setItem("tasks", JSON.stringify(tasks.value))
+		tasks.value = tasks.value.map(currentTask => {
+			if (currentTask.id === +route.params.id) {
+				currentTask.description = task.value.description
+				currentTask.subtasks = subtasks.value
+			}
+			return currentTask
+		})
 
-	router.push({ name: "index" })
+		localStorage.setItem("tasks", JSON.stringify(tasks.value))
+
+		router.push({ name: "index" })
+	}
 }
 
 const cancelEditTask = () => {
 	router.push({ name: "index" })
+}
+
+const deleteSubtask = idx => {
+	if (subtasks.value.length > 1) {
+		subtasks.value = subtasks.value.filter(subtask => subtask.subId !== idx)
+
+		for (let i = 0; i < subtasks.value.length; i++) {
+			subtasks.value[i].subId = i
+		}
+	}
+}
+
+const addSubtask = () => {
+	subtasks.value.push({
+		subId: subtasks.value.length,
+		subDescription: "",
+	})
 }
 </script>
 
 <template>
 	<div class="container--edit">
 		<h2>Редактировать задачу</h2>
+		<!-- <div>{{ task }}</div> -->
 		<label class="edit__label" for="edit-task">Название задачи</label>
-
-		<!-- <input
-			v-model="task.description"
-			class="edit__input"
-			type="text"
-			placeholder=""
-			id="edit-task"
-		/> -->
 		<el-input
 			v-model="task.description"
 			class="edit__input"
@@ -59,24 +96,41 @@ const cancelEditTask = () => {
 			id="edit-task"
 		/>
 
-		<!-- <div class="edit__container"> -->
-		<el-button-group class="edit__container">
-			<!-- <button @click="cancelEditTask" class="edit__cancel" type="button">
-				Отменить
-			</button>
-			<button @click="saveTask" class="edit__save" type="button">
-				Сохранить изменения
-			</button> -->
-
-			<!-- <el-button
-				@click="cancelEditTask"
-				class="edit__cancel"
+		<div
+			class="create__add-subtask--wr"
+			v-for="(subtask1, subIndex) in subtasks"
+			:key="subtask1.subId"
+		>
+			<label class="edit__label" for="create-subtask">
+				<!-- <div>{{ subtasks }}</div> -->
+				Описание подзадачи № {{ subIndex + 1 }}
+			</label>
+			<el-input
+				v-model="subtask1.subDescription"
+				class="edit__input"
+				placeholder="Введите подзадачу"
+				id="create-subtask"
+			/>
+			<el-button
+				@click="deleteSubtask(subtask1.subId)"
+				class="create__delete-subtask"
 				type="danger"
 				plain
 			>
-				Отменить
-			</el-button> -->
+				Удалить
+			</el-button>
+		</div>
 
+		<el-button
+			@click="addSubtask"
+			class="create__add-subtask"
+			type="primary"
+			plain
+		>
+			Добавить подзадачу
+		</el-button>
+
+		<el-button-group class="edit__container">
 			<el-popconfirm
 				width="300"
 				:icon="InfoFilled"
@@ -93,7 +147,7 @@ const cancelEditTask = () => {
 					<el-button
 						@click="cancel"
 						plain
-						style="width: 50px; border: 2px solid #a0cfff; border-radius: 5px"
+						style="width: 50px; border: 2px solid #409eff; border-radius: 5px"
 						type="primary"
 					>
 						Нет
@@ -101,7 +155,7 @@ const cancelEditTask = () => {
 					<el-button
 						@click="confirm"
 						plain
-						style="width: 50px; border: 2px solid #a0cfff; border-radius: 5px"
+						style="width: 50px; border: 2px solid #409eff; border-radius: 5px"
 						type="primary"
 					>
 						Да
@@ -113,8 +167,6 @@ const cancelEditTask = () => {
 				Сохранить изменения
 			</el-button>
 		</el-button-group>
-
-		<!-- </div> -->
 	</div>
 </template>
 
@@ -154,74 +206,9 @@ const cancelEditTask = () => {
 	margin-bottom: 18px;
 }
 
-/* .edit__input {
-	display: block;
-
-	height: 35px;
-	width: 100%;
-
-	padding: 1px 10px;
-
-	margin-bottom: 18px;
-
-	font-style: normal;
-	font-weight: 400;
-	color: black;
-
-	border: 1px solid #9ca3af;
-	border-radius: 5px;
-	outline: none;
-	background-color: #fefefe;
-
-	transition: all 0.4s ease;
-} */
-
-/* .edit__input::placeholder {
-	font-style: normal;
-	font-weight: 400;
-	color: black;
-} */
-
-/* .edit__input:hover {
-	border-color: #c0c4cc;
-}
-
-.edit__input:focus,
-.edit__input:active {
-	border-color: #a0cfff;
-} */
-
 .edit__container {
 	display: flex;
 }
-
-/* .edit__cancel {
-	width: 50%;
-	height: 32px;
-
-	font-weight: 600;
-	color: #f56c93;
-
-	border: 2px solid #facbcb;
-	border-radius: 5px;
-	background-color: #fef0f0;
-
-	display: flex;
-	justify-content: center;
-	align-items: center;
-
-	cursor: pointer;
-
-	transition: all 0.3s ease;
-}
-
-.edit__cancel:hover,
-.edit__cancel:focus,
-.edit__cancel:active {
-	background-color: #f56c6c;
-	color: #fffff6;
-	border: 2px solid #f56c6c;
-} */
 
 .edit__cancel {
 	border: 2px solid #facbcb;
@@ -233,35 +220,9 @@ const cancelEditTask = () => {
 .edit__cancel:focus,
 .edit__cancel:active {
 	border: 2px solid #f56c6c;
+	background-color: #f56c6c;
+	color: #fffff6;
 }
-
-/* .edit__save {
-	width: 50%;
-	height: 32px;
-
-	font-weight: 600;
-	color: #40b4ff;
-
-	border: 2px solid #a0cfff;
-	border-radius: 5px;
-	background-color: #ecf5ff;
-
-	display: flex;
-	justify-content: center;
-	align-items: center;
-
-	cursor: pointer;
-
-	transition: all 0.3s ease;
-}
-
-.edit__save:hover,
-.edit__save:focus,
-.edit__save:active {
-	background-color: #409eff;
-	color: #f3ffff;
-	border: 2px solid #409eff;
-} */
 
 .edit__save {
 	border: 2px solid #a0cfff;
@@ -274,5 +235,41 @@ const cancelEditTask = () => {
 .edit__save:focus,
 .edit__save:active {
 	border: 2px solid #409eff;
+	background-color: #409eff;
+	color: #f3ffff;
+}
+
+.create__add-subtask--wr {
+	margin-bottom: 18px;
+}
+
+.create__delete-subtask {
+	width: 84px;
+	border: 2px solid #facbcb;
+	border-radius: 5px;
+}
+
+.create__delete-subtask:hover,
+.create__delete-subtask:focus,
+.create__delete-subtask:active {
+	border: 2px solid #f56c6c;
+	background-color: #f56c6c;
+	color: #fffff6;
+}
+
+.create__add-subtask {
+	width: 100%;
+	border: 2px solid #a0cfff;
+	border-radius: 5px;
+	margin-left: 0;
+	margin-bottom: 18px;
+}
+
+.create__add-subtask:hover,
+.create__add-subtask:focus,
+.create__add-subtask:active {
+	border: 2px solid #409eff;
+	background-color: #409eff;
+	color: #f3ffff;
 }
 </style>

@@ -4,7 +4,15 @@ import { InfoFilled } from "@element-plus/icons-vue"
 const router = useRouter()
 
 const tasks = ref([])
+
 const task = ref("")
+
+const subtasks = ref([
+	{
+		subId: 0,
+		subDescription: "",
+	},
+])
 
 const getTodos = () => {
 	tasks.value = JSON.parse(localStorage.getItem("tasks"))
@@ -13,20 +21,55 @@ const getTodos = () => {
 getTodos()
 
 const saveTask = () => {
-	tasks.value.push({
-		id: Math.random() * 100000000000000000,
-		description: task.value,
-		isCompleted: false,
-	})
+	if (task.value.length > 0) {
+		subtasks.value = subtasks.value.filter(
+			subtask => subtask.subDescription !== ""
+		)
 
-	localStorage.setItem("tasks", JSON.stringify(tasks.value))
+		for (let i = 0; i < subtasks.value.length; i++) {
+			subtasks.value[i].subId = i
+		}
 
-	router.push({ name: "index" })
+		tasks.value.push({
+			id: Math.random() * 100000000000000000,
+			description: task.value,
+			isCompleted: false,
+			subtasks: subtasks.value,
+		})
+
+		localStorage.setItem("tasks", JSON.stringify(tasks.value))
+
+		router.push({ name: "index" })
+	}
 }
 
 const cancelSaveTask = () => {
 	task.value = ""
+	subtasks.value = [
+		{
+			subId: 0,
+			subDescription: "",
+		},
+	]
+
 	router.push({ name: "index" })
+}
+
+const deleteSubtask = idx => {
+	if (subtasks.value.length > 1) {
+		subtasks.value = subtasks.value.filter(subtask => subtask.subId !== idx)
+
+		for (let i = 0; i < subtasks.value.length; i++) {
+			subtasks.value[i].subId = i
+		}
+	}
+}
+
+const addSubtask = () => {
+	subtasks.value.push({
+		subId: subtasks.value.length,
+		subDescription: "",
+	})
 }
 </script>
 
@@ -34,14 +77,6 @@ const cancelSaveTask = () => {
 	<div class="container--create">
 		<h2>Создать задачу</h2>
 		<label class="create__label" for="create-task">Название задачи</label>
-
-		<!--<input
-			v-model="task"
-			class="create__input"
-			type="text"
-			placeholder=""
-			id="create-task"
-		 /> -->
 		<el-input
 			v-model="task"
 			class="create__input"
@@ -49,16 +84,41 @@ const cancelSaveTask = () => {
 			id="create-task"
 		/>
 
-		<el-button-group class="create__container">
-			<!-- <el-button
-				@click="cancelSaveTask"
-				class="create__cancel"
+		<div
+			class="create__add-subtask--wr"
+			v-for="(subtask1, subIndex) in subtasks"
+			:key="subtask1.subId"
+		>
+			<label class="create__label" for="create-subtask">
+				<!-- <div>{{ subtasks }}</div> -->
+				Описание подзадачи № {{ subIndex + 1 }}
+			</label>
+			<el-input
+				v-model="subtask1.subDescription"
+				class="create__input"
+				placeholder="Введите подзадачу"
+				id="create-subtask"
+			/>
+			<el-button
+				@click="deleteSubtask(subtask1.subId)"
+				class="create__delete-subtask"
 				type="danger"
 				plain
 			>
-				Отменить
-			</el-button> -->
+				Удалить
+			</el-button>
+		</div>
 
+		<el-button
+			@click="addSubtask"
+			class="create__add-subtask"
+			type="primary"
+			plain
+		>
+			Добавить подзадачу
+		</el-button>
+
+		<el-button-group class="create__container">
 			<el-popconfirm
 				width="300"
 				:icon="InfoFilled"
@@ -75,7 +135,7 @@ const cancelSaveTask = () => {
 					<el-button
 						@click="cancel"
 						plain
-						style="width: 50px; border: 2px solid #a0cfff; border-radius: 5px"
+						style="width: 50px; border: 2px solid #409eff; border-radius: 5px"
 						type="primary"
 					>
 						Нет
@@ -83,7 +143,7 @@ const cancelSaveTask = () => {
 					<el-button
 						@click="confirm"
 						plain
-						style="width: 50px; border: 2px solid #a0cfff; border-radius: 5px"
+						style="width: 50px; border: 2px solid #409eff; border-radius: 5px"
 						type="primary"
 					>
 						Да
@@ -134,74 +194,9 @@ const cancelSaveTask = () => {
 	margin-bottom: 18px;
 }
 
-.create__input input {
-	/* display: block;
-
-	height: 35px;
-	width: 100%; */
-
-	/* padding: 1px 10px; */
-
-	/* margin-bottom: 18px; */
-
-	/* font-style: normal;
-	font-weight: 400;
-	color: black; */
-
-	/* border: 1px solid #9ca3af;
-	border-radius: 5px;
-	outline: none;
-	background-color: #fefefe; */
-
-	/* transition: all 0.4s ease; */
-}
-
-/* .create__input::placeholder {
-	font-style: normal;
-	font-weight: 400;
-	color: black;
-}
-
-.create__input:hover {
-	border-color: #c0c4cc;
-}
-
-.create__input:focus,
-.create__input:active {
-	border-color: #a0cfff;
-} */
-
 .create__container {
 	display: flex;
 }
-
-/* .create__cancel {
-	width: 50%;
-	height: 32px;
-
-	font-weight: 600;
-	color: #f56c93;
-
-	border: 2px solid #facbcb;
-	border-radius: 5px;
-	background-color: #fef0f0;
-
-	display: flex;
-	justify-content: center;
-	align-items: center;
-
-	cursor: pointer;
-
-	transition: all 0.3s ease;
-}
-
-.create__cancel:hover,
-.create__cancel:focus,
-.create__cancel:active {
-	background-color: #f56c6c;
-	color: #fffff6;
-	border: 2px solid #f56c6c;
-} */
 
 .create__cancel {
 	border: 2px solid #facbcb;
@@ -213,35 +208,9 @@ const cancelSaveTask = () => {
 .create__cancel:focus,
 .create__cancel:active {
 	border: 2px solid #f56c6c;
+	background-color: #f56c6c;
+	color: #fffff6;
 }
-
-/* .create__save {
-	width: 50%;
-	height: 32px;
-
-	font-weight: 600;
-	color: #40b4ff;
-
-	border: 2px solid #a0cfff;
-	border-radius: 5px;
-	background-color: #ecf5ff;
-
-	display: flex;
-	justify-content: center;
-	align-items: center;
-
-	cursor: pointer;
-
-	transition: all 0.3s ease;
-} */
-
-/* .create__save:hover,
-.create__save:focus,
-.create__save:active {
-	background-color: #409eff;
-	color: #f3ffff;
-	border: 2px solid #409eff;
-} */
 
 .create__save {
 	border: 2px solid #a0cfff;
@@ -254,5 +223,41 @@ const cancelSaveTask = () => {
 .create__save:focus,
 .create__save:active {
 	border: 2px solid #409eff;
+	background-color: #409eff;
+	color: #f3ffff;
+}
+
+.create__add-subtask--wr {
+	margin-bottom: 18px;
+}
+
+.create__delete-subtask {
+	width: 84px;
+	border: 2px solid #facbcb;
+	border-radius: 5px;
+}
+
+.create__delete-subtask:hover,
+.create__delete-subtask:focus,
+.create__delete-subtask:active {
+	border: 2px solid #f56c6c;
+	background-color: #f56c6c;
+	color: #fffff6;
+}
+
+.create__add-subtask {
+	width: 100%;
+	border: 2px solid #a0cfff;
+	border-radius: 5px;
+	margin-left: 0;
+	margin-bottom: 18px;
+}
+
+.create__add-subtask:hover,
+.create__add-subtask:focus,
+.create__add-subtask:active {
+	border: 2px solid #409eff;
+	background-color: #409eff;
+	color: #f3ffff;
 }
 </style>

@@ -15,17 +15,54 @@ const fallbackTodos = [
 	{
 		id: 0,
 		description: "Изучить основы Vue",
-		isCompleted: true,
+		isCompleted: false,
+		subtasks: [
+			{
+				subId: 0,
+				subDescription: "Изучить декомпозицию",
+			},
+			{
+				subId: 1,
+				subDescription: "Изучить роутинг",
+			},
+			{
+				subId: 2,
+				subDescription: "Изучить Nuxt3",
+			},
+			{
+				subId: 3,
+				subDescription: "Изучить element-plus",
+			},
+		],
 	},
 	{
 		id: 1,
 		description: "Подготовиться к собеседованию",
-		isCompleted: false,
+		isCompleted: true,
+		subtasks: [
+			{
+				subId: 0,
+				subDescription: "Изучить декомпозицию",
+			},
+			{
+				subId: 1,
+				subDescription: "Изучить роутинг",
+			},
+			{
+				subId: 2,
+				subDescription: "Изучить Nuxt3",
+			},
+			{
+				subId: 3,
+				subDescription: "Изучить element-plus",
+			},
+		],
 	},
 	{
 		id: 2,
 		description: "Устроиться на работу",
 		isCompleted: false,
+		subtasks: [],
 	},
 ]
 
@@ -62,7 +99,6 @@ const editTask = idTask => {
 	<!-- <ClientOnly> -->
 	<div class="container--home">
 		<h2>Список задач</h2>
-		<!-- <NuxtLink to="/createTodo" class="create-link"> Создать задачу </NuxtLink> -->
 		<NuxtLink to="/createTodo" class="create-link">
 			<el-button type="success" plain>Создать задачу</el-button>
 		</NuxtLink>
@@ -75,21 +111,19 @@ const editTask = idTask => {
 			@click="setCompletion(task.id)"
 		>
 			<p class="task__number">{{ index + 1 }} .</p>
-			<p class="task__text">{{ task.description }}</p>
-			<div>
-				<!-- <button @click.stop="deleteTask(task.id)" class="task__delete">
-					Удалить
-				</button> -->
-
-				<!-- <el-button
-					@click.stop="deleteTask(task.id)"
-					class="task__delete"
-					type="danger"
-					plain
+			<div class="task__container">
+				<p class="task__text">{{ task.description }}</p>
+				<p
+					v-for="(subtask, subIndex) in task.subtasks"
+					:key="subtask.subId"
+					class="task__subtext"
 				>
-					Удалить
-				</el-button> -->
-
+					{{ subIndex + 1 }}
+					<span>.</span>
+					{{ subtask.subDescription }}
+				</p>
+			</div>
+			<div>
 				<el-popconfirm
 					width="300"
 					:icon="InfoFilled"
@@ -106,7 +140,7 @@ const editTask = idTask => {
 						<el-button
 							@click="cancel"
 							plain
-							style="width: 50px; border: 2px solid #a0cfff; border-radius: 5px"
+							style="width: 50px; border: 2px solid #409eff; border-radius: 5px"
 							type="primary"
 						>
 							Нет
@@ -114,7 +148,7 @@ const editTask = idTask => {
 						<el-button
 							@click="confirm"
 							plain
-							style="width: 50px; border: 2px solid #a0cfff; border-radius: 5px"
+							style="width: 50px; border: 2px solid #409eff; border-radius: 5px"
 							type="primary"
 						>
 							Да
@@ -122,9 +156,6 @@ const editTask = idTask => {
 					</template>
 				</el-popconfirm>
 
-				<!-- <button @click.stop="editTask(task.id)" class="task__edit">
-					Редактировать
-				</button> -->
 				<el-button
 					@click.stop="editTask(task.id)"
 					class="task__edit"
@@ -140,10 +171,6 @@ const editTask = idTask => {
 </template>
 
 <style scoped>
-body {
-	margin: 0;
-}
-
 *,
 *::before,
 *::after {
@@ -174,34 +201,12 @@ body {
 	display: block;
 	height: 32px;
 
-	/* padding: 8px 15px; */
 	margin-bottom: 8px;
-
-	/*text-align: center;
-	font-size: 16px;
-	font-weight: 500;
-
-	line-height: 1;
-	color: #67c23a; */
 
 	outline: none;
 	text-decoration: none;
-	/* border: 2px solid #b3e19d;
-	border-radius: 5px;
-
-	cursor: pointer; */
 	text-decoration-line: none;
-
-	/* transition: all 0.3s ease;  */
 }
-
-/* .create-link:hover,
-.create-link:focus,
-.create-link:active { */
-/* background-color: #67c23a;
-	color: #fffff3;
-	border: 2px solid #67c23a; */
-/* } */
 
 .create-link button {
 	width: 100%;
@@ -212,9 +217,9 @@ body {
 .create-link button:hover,
 .create-link button:focus,
 .create-link button:active {
-	/* background-color: #67c23a;
-	color: #fffff3; */
 	border: 2px solid #67c23a;
+	background-color: #67c23a;
+	color: #fffff3;
 }
 
 .task {
@@ -239,14 +244,31 @@ body {
 	text-decoration: line-through;
 }
 
+.task--completed .task__subtext {
+	text-decoration: line-through;
+}
+
 .task__number {
 	width: 30px;
 	flex-shrink: 0;
+	font-weight: bold;
+	align-self: stretch;
+	padding-top: 6px;
+}
+
+.task__container {
+	flex-grow: 1;
+	padding-right: 10px;
 }
 
 .task__text {
-	flex-grow: 1;
-	padding-right: 10px;
+	font-weight: bold;
+	margin-bottom: 5px;
+	padding-top: 6px;
+}
+
+.task__subtext {
+	margin-bottom: 5px;
 }
 
 .task div {
@@ -256,79 +278,22 @@ body {
 
 	display: flex;
 	flex-direction: column;
-	justify-content: space-between;
 }
-
-/* .task__delete {
-	height: 32px;
-	width: 100%;
-
-	font-weight: 600;
-	color: #f56c93;
-
-	border: 2px solid #facbcb;
-	border-radius: 5px;
-	background-color: #fef0f0;
-
-	display: flex;
-	justify-content: center;
-	align-items: center;
-
-	cursor: pointer;
-
-	transition: all 0.3s ease;
-}
-
-
-.task__delete:hover,
-.task__delete:focus,
-.task__delete:active {
-	background-color: #f56c6c;
-	color: #fffff6;
-	border: 2px solid #f56c6c;
-} */
 
 .task__delete {
 	width: 100%;
 	border: 2px solid #facbcb;
 	border-radius: 5px;
+	margin-bottom: 10px;
 }
 
 .task__delete:hover,
 .task__delete:focus,
 .task__delete:active {
 	border: 2px solid #f56c6c;
+	background-color: #f56c6c;
+	color: #fffff6;
 }
-
-/* .task__edit {
-	height: 32px;
-	width: 100%;
-
-	font-weight: 600;
-	color: #40b4ff;
-
-	border: 2px solid #a0cfff;
-	border-radius: 5px;
-	background-color: #ecf5ff;
-
-	display: flex;
-	justify-content: center;
-	align-items: center;
-
-	cursor: pointer;
-	outline: none;
-	text-decoration-line: none;
-
-	transition: all 0.3s ease;
-}
-
-.task__edit:hover,
-.task__edit:focus,
-.task__edit:active {
-	background-color: #409eff;
-	color: #f3ffff;
-	border: 2px solid #409eff;
-} */
 
 .task__edit {
 	width: 100%;
@@ -341,5 +306,7 @@ body {
 .task__edit:focus,
 .task__edit:active {
 	border: 2px solid #409eff;
+	background-color: #409eff;
+	color: #f3ffff;
 }
 </style>
