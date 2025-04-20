@@ -94,13 +94,15 @@ const editTask = idTask => {
 	router.push({ name: "editTodo-id", params: { id: idTask } })
 }
 
-const fixBugForDeploy = () => {
-	router.push({ name: "createTodo" })
-	router.push({ name: "index" })
-	console.log("Переход")
-}
+// const fixBugForDeploy = () => {
+// 	router.push({ name: "createTodo" })
+// 	router.push({ name: "index" })
+// 	console.log("Переход")
+// }
 
-fixBugForDeploy()
+// fixBugForDeploy()
+
+console.log("Перехода нет")
 </script>
 
 <template>
