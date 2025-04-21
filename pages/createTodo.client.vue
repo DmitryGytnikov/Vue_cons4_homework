@@ -76,29 +76,28 @@ const addSubtask = () => {
 <template>
 	<div class="container--create">
 		<h2>Создать задачу</h2>
-		<label class="create__label" for="create-task">Название задачи</label>
-		<el-input
-			v-model="task"
-			class="create__input"
-			placeholder="Введите задачу"
-			id="create-task"
-		/>
-
+		<label class="create__label"
+			>Название задачи1
+			<el-input
+				v-model="task"
+				class="create__input"
+				placeholder="Введите задачу"
+			/>
+		</label>
 		<div
 			class="create__add-subtask--wr"
 			v-for="(subtask1, subIndex) in subtasks"
 			:key="subtask1.subId"
 		>
-			<label class="create__label" for="create-subtask">
+			<label class="create__label">
 				<!-- <div>{{ subtasks }}</div> -->
 				Описание подзадачи № {{ subIndex + 1 }}
+				<el-input
+					v-model="subtask1.subDescription"
+					class="create__input"
+					placeholder="Введите подзадачу"
+				/>
 			</label>
-			<el-input
-				v-model="subtask1.subDescription"
-				class="create__input"
-				placeholder="Введите подзадачу"
-				id="create-subtask"
-			/>
 			<el-button
 				@click="deleteSubtask(subtask1.subId)"
 				class="create__delete-subtask"
@@ -187,11 +186,11 @@ const addSubtask = () => {
 
 .create__label {
 	display: block;
-	margin-bottom: 8px;
 }
 
 .create__input {
 	margin-bottom: 18px;
+	padding-top: 8px;
 }
 
 .create__container {

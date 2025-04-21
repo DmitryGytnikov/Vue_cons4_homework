@@ -1,6 +1,6 @@
 <script setup>
 import { InfoFilled } from "@element-plus/icons-vue"
-
+import "./assets/css/index.css"
 const router = useRouter()
 
 const tasks = ref([
