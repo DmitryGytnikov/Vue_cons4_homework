@@ -74,86 +74,88 @@ const addSubtask = () => {
 </script>
 
 <template>
-	<div class="container--create">
-		<h2>Создать задачу</h2>
-		<label class="create__label"
-			>Название задачи1
-			<el-input
-				v-model="task"
-				class="create__input"
-				placeholder="Введите задачу"
-			/>
-		</label>
-		<div
-			class="create__add-subtask--wr"
-			v-for="(subtask1, subIndex) in subtasks"
-			:key="subtask1.subId"
-		>
-			<label class="create__label">
-				<!-- <div>{{ subtasks }}</div> -->
-				Описание подзадачи № {{ subIndex + 1 }}
+	<div>
+		<div class="container--create">
+			<h2>Создать задачу</h2>
+			<label class="create__label"
+				>Название задачи1
 				<el-input
-					v-model="subtask1.subDescription"
+					v-model="task"
 					class="create__input"
-					placeholder="Введите подзадачу"
+					placeholder="Введите задачу"
 				/>
 			</label>
+			<div
+				class="create__add-subtask--wr"
+				v-for="(subtask1, subIndex) in subtasks"
+				:key="subtask1.subId"
+			>
+				<label class="create__label">
+					<!-- <div>{{ subtasks }}</div> -->
+					Описание подзадачи № {{ subIndex + 1 }}
+					<el-input
+						v-model="subtask1.subDescription"
+						class="create__input"
+						placeholder="Введите подзадачу"
+					/>
+				</label>
+				<el-button
+					@click="deleteSubtask(subtask1.subId)"
+					class="create__delete-subtask"
+					type="danger"
+					plain
+				>
+					Удалить
+				</el-button>
+			</div>
+
 			<el-button
-				@click="deleteSubtask(subtask1.subId)"
-				class="create__delete-subtask"
-				type="danger"
+				@click="addSubtask"
+				class="create__add-subtask"
+				type="primary"
 				plain
 			>
-				Удалить
+				Добавить подзадачу
 			</el-button>
+
+			<el-button-group class="create__container">
+				<el-popconfirm
+					width="300"
+					:icon="InfoFilled"
+					icon-color="#ff9900"
+					title="Вы уверены, что хотите отменить создание задачи?"
+					@confirm="cancelSaveTask"
+				>
+					<template #reference>
+						<el-button class="create__cancel" type="danger" plain>
+							Отменить
+						</el-button>
+					</template>
+					<template #actions="{ confirm, cancel }">
+						<el-button
+							@click="cancel"
+							plain
+							style="width: 50px; border: 2px solid #409eff; border-radius: 5px"
+							type="primary"
+						>
+							Нет
+						</el-button>
+						<el-button
+							@click="confirm"
+							plain
+							style="width: 50px; border: 2px solid #409eff; border-radius: 5px"
+							type="primary"
+						>
+							Да
+						</el-button>
+					</template>
+				</el-popconfirm>
+
+				<el-button @click="saveTask" class="create__save" type="primary" plain>
+					Сохранить
+				</el-button>
+			</el-button-group>
 		</div>
-
-		<el-button
-			@click="addSubtask"
-			class="create__add-subtask"
-			type="primary"
-			plain
-		>
-			Добавить подзадачу
-		</el-button>
-
-		<el-button-group class="create__container">
-			<el-popconfirm
-				width="300"
-				:icon="InfoFilled"
-				icon-color="#ff9900"
-				title="Вы уверены, что хотите отменить создание задачи?"
-				@confirm="cancelSaveTask"
-			>
-				<template #reference>
-					<el-button class="create__cancel" type="danger" plain>
-						Отменить
-					</el-button>
-				</template>
-				<template #actions="{ confirm, cancel }">
-					<el-button
-						@click="cancel"
-						plain
-						style="width: 50px; border: 2px solid #409eff; border-radius: 5px"
-						type="primary"
-					>
-						Нет
-					</el-button>
-					<el-button
-						@click="confirm"
-						plain
-						style="width: 50px; border: 2px solid #409eff; border-radius: 5px"
-						type="primary"
-					>
-						Да
-					</el-button>
-				</template>
-			</el-popconfirm>
-
-			<el-button @click="saveTask" class="create__save" type="primary" plain>
-				Сохранить
-			</el-button>
-		</el-button-group>
 	</div>
 </template>
 
